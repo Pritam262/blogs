@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { Metadata} from "next";
 import Link from "next/link";
 
-import DeleteBtn from "../../../component/deletebtn";
+import DeleteBtn from "../../../components/deletebtn";
 
 export async function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Promise<Metadata> {
 
