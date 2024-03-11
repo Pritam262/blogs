@@ -14,6 +14,6 @@ export default function DeleteBtn(props: props) {
         }
     }
         return (
-            <button className="px-2 border-black border text-white" onClick={()=>deleteBlog(props?.id)}>Delete Blog</button>
+            <button className="p-2 bg-purple-600 rounded text-white text-xl" onClick={()=>deleteBlog(props?.id)}>Delete Blog</button>
         )
     }

@@ -1,3 +1,4 @@
+import { getDataFromToken } from "@/helper/getDataFromToken";
 import { MONGO_URI } from "@/lib/db";
 import { Blog } from "@/lib/model/blogModel";
 import { HttpStatusCode } from "axios";
@@ -38,7 +39,7 @@ export const GET = async (req: { nextUrl: { searchParams: any; }; }) => {
 
         await mongoose.connect(MONGO_URI);
 
-        const data = await Blog.find();
+        const data = await Blog.find().sort({date:-1});
 
         return NextResponse.json({ success: data })
     } catch (error) {
@@ -49,7 +50,7 @@ export const GET = async (req: { nextUrl: { searchParams: any; }; }) => {
 
 export async function POST(req: NextRequest) {
     try {
-
+        const token = await getDataFromToken(req);
         await mongoose.connect(MONGO_URI);
 
         const searchParams = req.nextUrl.searchParams;
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
             dtyew: "k8ydued",
         }
         const uploadPost = await Blog.create({
-            title,description, content
+           user:token, title,description, content
         })
         // return new NextResponse(JSON.stringify({ formatedData }), { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } });
         return new NextResponse("BLOG Upload", { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } });

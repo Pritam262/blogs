@@ -15,6 +15,7 @@ const MyEditor: React.FC = () => {
 
             const response = await fetch('http://127.0.0.1:3003/api/blog', {
                 method: "POST",
+                credentials:'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },

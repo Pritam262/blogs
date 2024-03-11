@@ -38,13 +38,15 @@ export default function AdminLogin() {
             },
             body:JSON.stringify({email,password})
         });
-        if(response.status === 200){
-            router.push("/blogs")
-        }
-        
         const resData = await response.json();
 
         console.log(resData);
+        if(response.status === 200){
+
+            localStorage.setItem('admintoken', resData.authtoken)
+            router.push("/blogs")
+        }
+        
 
     }
 
