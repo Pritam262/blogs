@@ -8,8 +8,10 @@ const MyEditor: React.FC = () => {
 
     const [content, setContent] = useState(" ");
 
-    const [title, setTitle] = useState<String | undefined>();
-    const [description, setDescription] = useState<String | undefined>();
+    const [title, setTitle] = useState<String >();
+    const [description, setDescription] = useState<String >();
+
+    const [data, setData] = useState({title:" ", description:" "})
     const uploadPost = async () => {
         try {
 
@@ -19,13 +21,12 @@ const MyEditor: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ title, description, content })
+                body: JSON.stringify({ title: data.title,description: data.description, content })
             })
 
-            console.log(JSON.stringify({ title, description, content }));
+            console.log(JSON.stringify({ title, description, content: content }));
 
             console.log(await response.json());
-            // console.log(rawContentState)
         } catch (error) {
             console.log(error)
         }
@@ -57,8 +58,8 @@ const MyEditor: React.FC = () => {
        <div className='flex flex-col'>
             <div className='mt-5 border border-red-500'>
 
-                <input className='border' style={{marginRight:'4px'}} type="text" name="title" id="" placeholder='Blog title' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} value={title} />
-                <input className='border' type="text" name="description" id="" placeholder='Blog description' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)} value={description} />
+                <input className='border' style={{marginRight:'4px'}} type="text" name="title" id="" placeholder='Blog title' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]: e.target.value})}  value={data.title.trim() !== '' ? data.title : ''} />
+                <input className='border' type="text" name="description" id="" placeholder='Blog description' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]:e.target.value})}  value={data.description.trim() !== '' ? data.description : ''} />
             </div>
 
 

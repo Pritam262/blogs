@@ -63,11 +63,11 @@ export async function POST(req: NextRequest) {
             console.log(validateRequest)
             return new NextResponse(JSON.stringify({ error: "Enter valid data" }), { status: HttpStatusCode.BadRequest, headers: { 'Content-Type': 'application/json' } });
         }
-        const formatedData = {
-            body: body,
-            hdyd: "udeddu",
-            dtyew: "k8ydued",
-        }
+        // const formatedData = {
+        //     body: body,
+        //     hdyd: "udeddu",
+        //     dtyew: "k8ydued",
+        // }
         const uploadPost = await Blog.create({
            user:token, title,description, content
         })
@@ -87,12 +87,12 @@ export async function DELETE (req:NextRequest){
         const searchParams = req.nextUrl.searchParams;
         const id = searchParams.get('id');
         if(!id){
-            return new NextResponse("BLOG Not Found", { status: HttpStatusCode.NotFound, headers: { 'Content-Type': 'application/json' } });
+            return new NextResponse("BLOG Not Found", { status: HttpStatusCode.NotFound,  });
         }
         // return new NextResponse(JSON.stringify({ formatedData }), { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } });
 
         await Blog.findByIdAndDelete(id);
-        return new NextResponse("BLOG Deleted", { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } });
+        return new NextResponse("BLOG Deleted", { status: HttpStatusCode.Ok, });
     } catch (error) {
         return new NextResponse(JSON.stringify({ error: "Error" }), { status: HttpStatusCode.InternalServerError, headers: { 'Content-Type': 'application/json' } });
     }
