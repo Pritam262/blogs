@@ -1,16 +1,20 @@
 'use client'
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { SERVER_URL } from "@/variable";
 
 export default function AdminRegister() {
 
 
+    const router = useRouter();
+
     const [error, setError] = useState({ type: '', msg: '' })
 
-    const [credencials, setCredencials] = useState({username:' ', email: ' ', password:' ', conpass: ' '})
+    const [credencials, setCredencials] = useState({ username: ' ', email: ' ', password: ' ', conpass: ' ' })
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
-        if(e.target.name === "username"){
+        if (e.target.name === "username") {
             if (e.target.value.length < 6 && e.target.value != '') {
                 setError({ type: "username", msg: "Username atleast 3 digit" })
             }
@@ -29,11 +33,11 @@ export default function AdminRegister() {
                 setError({ type: '', msg: '' })
             }
         }
-        else if(e.target.name === 'conpass'){
-            if(credencials.password != credencials.conpass){
+        else if (e.target.name === 'conpass') {
+            if (credencials.password != credencials.conpass) {
                 setError({ type: 'conpass', msg: 'Confirm password does not match with password' })
             }
-            else{
+            else {
                 setError({ type: '', msg: '' })
             }
         }
@@ -47,17 +51,26 @@ export default function AdminRegister() {
         const password = formData.get('password');
         const conpass = formData.get('conpass');
 
-        const response = await fetch('http://127.0.0.1:3003/api/admin/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, email, password, conpass })
-        })
+        try {
 
 
-        const resData = await response.json();
-        console.log(resData);
+            const response = await fetch(`${SERVER_URL}/api/admin/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password, conpass })
+            })
+
+
+            const resData = await response.json();
+
+            if (response.ok) {
+                router.push('/admin/blogs');
+            }
+        } catch (error) {
+            console.error(error);
+        }
 
     }
     return (
@@ -74,7 +87,7 @@ export default function AdminRegister() {
 
                 </div>
                 <button className="bg-blue-600 w-fit mx-auto px-3 py-2 rounded text-white mt-5" type="submit">Login</button>
-                <p className="mt-5">Don't have an account <Link href="/admin/adminregister" className="text-blue-500">Click</Link> here</p>
+                <p className="mt-5">Don&apos;t have an account <Link href="/admin/adminregister" className="text-blue-500">Click</Link> here</p>
             </form>
         </div>
     )

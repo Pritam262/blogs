@@ -2,6 +2,10 @@
 import mongoose from "mongoose";
 
 const blogSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin',
+    },
     title: {
         type: String,
         required: true,

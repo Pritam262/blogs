@@ -1,7 +1,9 @@
 'use client'
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent,  useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { SERVER_URL } from "@/variable";
+
 
 export default function AdminLogin() {
 
@@ -28,25 +30,30 @@ export default function AdminLogin() {
         const email = formData.get('email');
         const password = formData.get('password');
 
-        const serverUrl = process.env.SERVER_URL;
-        console.log(serverUrl);
-
-        const response = await fetch('http://127.0.0.1:3003/api/admin/login', {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({email,password})
-        });
-        if(response.status === 200){
-            router.push("/blogs")
+        try {
+            
+            
+            const response = await fetch(`${SERVER_URL}/api/admin/login`, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({email,password})
+            });
+            await response.json();
+            
+            if(response.status === 200){
+                
+                // localStorage.setItem('admintoken', resData.authtoken);
+                router.push("/admin/blogs")
+            }
+            
+        } catch (error) {
+            console.error(error);
         }
-        
-        const resData = await response.json();
-
-        console.log(resData);
 
     }
+
 
     return (
         <div className="flex flex-col items-center justify-center w-screen h-screen">
@@ -60,7 +67,7 @@ export default function AdminLogin() {
 
                 </div>
                 <button className="bg-blue-600 w-fit mx-auto px-3 py-2 rounded text-white mt-5" type="submit">Login</button>
-                <p className="mt-5">Don't have an account <Link href="/admin/adminregister" className="text-blue-500">Click</Link> here</p>
+                <p className="mt-5">Don&apos;t have an account <Link href="/admin/registration" className="text-blue-500">Click</Link> here</p>
             </form>
         </div>
     )

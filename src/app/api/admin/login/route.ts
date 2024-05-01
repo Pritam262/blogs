@@ -37,12 +37,13 @@ export const POST = async (req: NextRequest) => {
         const authtoken = jwt.sign(tokenPayload, JWT_KEY);
 
         cookies().set({
-            name:"authtoken",
+            name:"admintoken",
             value:authtoken,
-            httpOnly:true,
-            sameSite:true,
-            secure:true,
-            path:'/',
+                //    secure: process.env.NODE_ENV !== "development",
+                secure: false,
+                httpOnly: true,
+                // sameSite: "None",
+                // domain: '.ims.pritamjana.com'
             expires:Date.now() + Number(process.env.JWT_COOKIES_EXPIRE_IN) * 24 * 60 *60 * 1000
 
         })

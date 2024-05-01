@@ -1,7 +1,7 @@
 'use client'
 
-import MyEditor from "../../../../../components/postupload"
-import Editor from "../../../../../components/postupload"
+
+import MyEditor from "../../../../components/postupload";
 
 export default function postBlog() {
 
