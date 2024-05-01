@@ -1,7 +1,6 @@
 import { MONGO_URI } from "@/lib/db";
 import { HttpStatusCode } from "axios";
 import mongoose from "mongoose";
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -19,27 +18,27 @@ export const POST = async (req: NextRequest) => {
 
         const { username, email, password, conpass } = await req.json();
 
-        const user = await AdminAuthModel.findOne({email});
-        if(user){
-            return new NextResponse(JSON.stringify({ error: "User already exit"}), { status: HttpStatusCode.Forbidden, headers: { 'Content-Type': 'application/json' } })
+        const user = await AdminAuthModel.findOne({ email });
+        if (user) {
+            return new NextResponse(JSON.stringify({ error: "User already exit" }), { status: HttpStatusCode.Forbidden, headers: { 'Content-Type': 'application/json' } })
         }
 
-        if(password != conpass){
-            return new NextResponse(JSON.stringify({ error: "password and confirm password did not match"}), { status: HttpStatusCode.BadRequest, headers: { 'Content-Type': 'application/json' } })
+        if (password != conpass) {
+            return new NextResponse(JSON.stringify({ error: "password and confirm password did not match" }), { status: HttpStatusCode.BadRequest, headers: { 'Content-Type': 'application/json' } })
         }
 
-        const salt  = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
 
         const registerUser = await AdminAuthModel.create({
             username,
             email,
-            password:hashPassword
+            password: hashPassword
         })
 
         const tokenPayload = {
-            user:{
-                id:registerUser.id,
+            user: {
+                id: registerUser.id,
             }
         }
 
@@ -56,15 +55,18 @@ export const POST = async (req: NextRequest) => {
         // }
 
         cookies().set({
-            name:"authtoken",
-            value:authtoken,
-            httpOnly:true,
-            path:'/',
-            expires:Date.now() + Number(process.env.JWT_COOKIES_EXPIRE_IN) * 24 * 60 *60 * 1000
+            name: "admintoken",
+            value: authtoken,
+            //    secure: process.env.NODE_ENV !== "development",
+            secure: false,
+            httpOnly: true,
+            // sameSite: "None",
+            // domain: '.ims.pritamjana.com'
+            expires: Date.now() + Number(process.env.JWT_COOKIES_EXPIRE_IN) * 24 * 60 * 60 * 1000
 
         })
-        
-        return new NextResponse(JSON.stringify({ authtoken}), { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } })
+
+        return new NextResponse(JSON.stringify({ authtoken }), { status: HttpStatusCode.Ok, headers: { 'Content-Type': 'application/json' } })
 
     } catch (error) {
         return new NextResponse(JSON.stringify({ error: error }), { status: HttpStatusCode.InternalServerError, headers: { 'Content-Type': 'application/json' } })
