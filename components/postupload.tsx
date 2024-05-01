@@ -1,21 +1,31 @@
 'use client'
-import React, { useState } from 'react';
+import hljs from "highlight.js";
 
-import ReactQuill from 'react-quill';
+import "highlight.js/styles/atom-one-dark.css";
+import dynamic from 'next/dynamic';
+
+import React, { useEffect, useState } from 'react';
+
+// import ReactQuill from 'react-quill';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false }); // Dynamically import React Quill with no SSR
 import 'react-quill/dist/quill.snow.css';
-const MyEditor: React.FC = () => {
+
+
+export default function  MyEditor()  {
+    // hljs.configure({
+    //     // optionally configure hljs
+    //     languages: ["javascript", "python", "c", "c++", "java", "HTML", "css", "matlab"],
+    //   });
     // const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
     const [content, setContent] = useState(" ");
 
-    const [title, setTitle] = useState<String >();
-    const [description, setDescription] = useState<String >();
 
-    const [data, setData] = useState({title:" ", description:" "})
+    const [data, setData] = useState({title:"", description:""})
     const uploadPost = async () => {
         try {
 
-            const response = await fetch('http://127.0.0.1:3003/api/blog', {
+            const response = await fetch('/api/blog', {
                 method: "POST",
                 credentials:'include',
                 headers: {
@@ -24,15 +34,21 @@ const MyEditor: React.FC = () => {
                 body: JSON.stringify({ title: data.title,description: data.description, content })
             })
 
-            console.log(JSON.stringify({ title, description, content: content }));
+            // console.log(JSON.stringify({ title, description, content: content }));
 
             console.log(await response.json());
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 
     const modules = {
+        // syntax: {
+        //     highlight: function (text: string) {
+        //       return hljs.highlightAuto(text).value;
+        //     },
+        //   },
+        syntax:true,
          toolbar: [
             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
             ['blockquote', 'code-block'],
@@ -53,13 +69,19 @@ const MyEditor: React.FC = () => {
         ],
 
     };
+
+    // useEffect(()=>{
+    //     ReactQuill
+    // },[])
+
+    
     return (
 
        <div className='flex flex-col'>
-            <div className='mt-5 border border-red-500'>
+            <div className='mt-5   flex flex-col w-5/6'>
 
-                <input className='border' style={{marginRight:'4px'}} type="text" name="title" id="" placeholder='Blog title' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]: e.target.value})}  value={data.title.trim() !== '' ? data.title : ''} />
-                <input className='border' type="text" name="description" id="" placeholder='Blog description' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]:e.target.value})}  value={data.description.trim() !== '' ? data.description : ''} />
+                <input className='border px-2 py-1'  type="text" name="title" id="" placeholder='Blog title' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]: e.target.value})}  value={data.title} />
+                <input className='border my-2 px-2 py-1' type="text" name="description" id="" placeholder='Blog description' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData({...data, [e.target.name]:e.target.value})}  value={data.description} />
             </div>
 
 
@@ -71,7 +93,7 @@ const MyEditor: React.FC = () => {
 
 };
 
-export default MyEditor;
+
 
 
 
